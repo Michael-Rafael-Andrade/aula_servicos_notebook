@@ -7,6 +7,47 @@ export default function App() {
   const [text, setText] = useState('');   // texto do input
   const [editId, setEditId] = useState(null); // id em edição
 
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    try {
+      const stored = await AsyncStorage.getItem('@items');
+      if (stored) setItems(JSON.parse(stored));
+    }
+    catch (e) {
+      console.error('Erro ao carregar dados', e);
+    }
+  };
+
+  const saveData = async (newItems) => {
+    try {
+      await AsyncStorage.setItem('@items', JSON.stringify(newItems));
+    } catch (e) {
+      console.error('Erro ao salvar', e);
+    }
+  };
+
+
+  const handleAdd = async () => {
+    if (!text.trim()) return Alert.alert('Digite algo!');
+    let newList = [];
+    if (editId) {
+      newList = items.map((i) =>
+        i.id === editId ? { ...i, name: text } : 1
+      );
+      setEditId(null);
+    }
+    else {
+      const newItem = { id: Date.now().toString(), name: text };
+      newList = [...items, newItem];
+    }
+
+    setItems(newList);
+    await saveData(newList);
+    setText('');
+  };
 
   return (
     <View style={styles.container}>
@@ -19,7 +60,7 @@ export default function App() {
           value={text}
           onChangeText={setText}
         />
-        <Button title={editId ? 'Salvar' : 'Adicionar'} onPress={null} />
+        <Button title={editId ? 'Salvar' : 'Adicionar'} onPress={handleAdd} />
       </View>
 
     </View>

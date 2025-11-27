@@ -14,9 +14,9 @@ export default function App() {
   const loadData = async () => {
     try {
       const stored = await AsyncStorage.getItem('@items');
-      if (stored) setItems(JSON.parse(stored));
+      if(stored) setItems(JSON.parse(stored));
     }
-    catch (e) {
+    catch(e) {
       console.error('Erro ao carregar dados', e);
     }
   };
@@ -24,23 +24,24 @@ export default function App() {
   const saveData = async (newItems) => {
     try {
       await AsyncStorage.setItem('@items', JSON.stringify(newItems));
-    } catch (e) {
+    }
+    catch(e) {
       console.error('Erro ao salvar', e);
     }
   };
 
-
   const handleAdd = async () => {
-    if (!text.trim()) return Alert.alert('Digite algo!');
+    if(!text.trim()) return Alert.alert('Digite algo!');
+
     let newList = [];
-    if (editId) {
+    if(editId) {
       newList = items.map((i) =>
-        i.id === editId ? { ...i, name: text } : 1
+        i.id === editId ? { ...i, name: text } : i
       );
       setEditId(null);
     }
     else {
-      const newItem = { id: Date.now().toString(), name: text };
+      const newItem = {id: Date.now().toString(), name: text };
       newList = [...items, newItem];
     }
 
@@ -53,7 +54,6 @@ export default function App() {
     setText(item.name);
     setEditId(item.id);
   };
-
 
   const handleDelete = async (id) => {
     const newList = items.filter((i) => i.id !== id);
@@ -75,24 +75,23 @@ export default function App() {
         <Button title={editId ? 'Salvar' : 'Adicionar'} onPress={handleAdd} />
       </View>
 
-      <FlatList
+      <FlatList 
         data={items}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.item}>
+          <View style={styles.item}> 
             <Text style={styles.itemText}>{item.name}</Text>
             <View style={styles.buttons}>
               <TouchableOpacity onPress={() => handleEdit(item)}>
                 <Text style={styles.edit}>Editar</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> 
               <TouchableOpacity onPress={() => handleDelete(item.id)}>
-                <Text style={styles.edit}>Deletar</Text>
-              </TouchableOpacity>
+                <Text style={styles.delete}>Deletar</Text>
+              </TouchableOpacity> 
             </View>
           </View>
         )}
       />
-
     </View>
   );
 }

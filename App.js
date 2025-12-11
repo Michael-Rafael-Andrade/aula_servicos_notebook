@@ -49,6 +49,18 @@ export default function App() {
     setText('');
   };
 
+
+  const handleEdit = (item) => {
+    setText(item.name);
+    setEditId(item.id);
+  };
+
+  const handleDelete = async(id) => {
+    const newList = items.filter((i) => i.id !== id);
+  };
+
+  // parei aqui, no vídeo 16min 58segundos video 6 parte 3
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>CRUD com AsyncStorage</Text>
@@ -62,6 +74,21 @@ export default function App() {
         />
         <Button title={editId ? 'Salvar' : 'Adicionar'} onPress={handleAdd} />
       </View>
+
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id}
+      renderItem={({item}) => (
+        <View style={styles.item}>
+          <Text style={styles.itemText}>{item.name}</Text>
+          <View style={styles.buttons}>
+            <TouchableOpacity onPress={() => handleEdit(item)}>
+              <Text style={styles.edit}>Editar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+    />
 
     </View>
   );
